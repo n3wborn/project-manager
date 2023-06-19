@@ -36,6 +36,6 @@ jobs:
           done
           exit 1
       - name: Check HTTP reachability
-        run: curl http://symfo.localhost
+        run: curl http://project-manager.localhost
       - name: Check HTTPS reachability
-        run: curl -k https://symfo.localhost
+        run: curl -k https://project-manager.localhost
