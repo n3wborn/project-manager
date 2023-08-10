@@ -10,7 +10,7 @@ use Symfony\Component\Uid\Uuid;
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 #[ORM\Table(name: 'project')]
 #[ORM\HasLifecycleCallbacks]
-final class Project
+class Project
 {
     use ArchivableEntity;
 
@@ -32,53 +32,53 @@ final class Project
     #[ORM\Column(nullable: true, type: 'datetime_immutable')]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    public function getId(): ?Uuid
+    final public function getId(): ?Uuid
     {
         return $this->id;
     }
 
-    public function getName(): ?string
+    final public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setName(string $name): self
+    final public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    final public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    final public function setDescription(string $description): self
     {
         $this->description = $description;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    final public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    final public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    final public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    final public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 
@@ -86,13 +86,13 @@ final class Project
     }
 
     #[ORM\PrePersist]
-    public function setCreatedAtValue(): void
+    final public function setCreatedAtValue(): void
     {
         $this->createdAt = new \DateTimeImmutable();
     }
 
     #[ORM\PreUpdate]
-    public function setUpdatedAtValue(): void
+    final public function setUpdatedAtValue(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
     }
