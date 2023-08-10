@@ -4,7 +4,7 @@ version: "3.4"
 services:
   php:
     build:
-      target: app_php_dev
+      target: php_dev
     volumes:
       - ./:/srv/app
       - ./docker/php/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
@@ -29,8 +29,9 @@ services:
         "caddyfile",
         "--watch",
       ]
+    build:
+      context: .
+      target: caddy_base
     volumes:
-      - ./public:/srv/app/public
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
+      - ./public:/srv/app/public:ro
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
