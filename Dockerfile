@@ -17,7 +17,14 @@ WORKDIR /srv/app
 
 # persistent / runtime deps
 # hadolint ignore=DL3018
-RUN apk add --no-cache acl fcgi file gettext git postgresql-dev;
+RUN apk add --no-cache \
+		acl \
+		fcgi \
+		file \
+		gettext \
+		git \
+		postgresql-dev \
+	;
 
 # php extensions installer: https://github.com/mlocati/docker-php-extension-installer
 COPY --from=php_extension_installer_upstream --link /usr/bin/install-php-extensions /usr/local/bin/
