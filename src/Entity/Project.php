@@ -13,6 +13,7 @@ use Symfony\Component\Uid\Uuid;
 class Project
 {
     use ArchivableEntity;
+    use SluggableTrait;
 
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
