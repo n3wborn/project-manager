@@ -10,9 +10,35 @@ use App\Helper\ApiMessages;
 final class Validator
 {
     public const PROJECT_ALREADY_ARCHIVED = 'Le projet est déjà archivé';
+    public const NAME_SHOULD_NOT_BE_EMPTY = 'Le champ Nom ne peut être vide';
+    public const DESCRIPTION_SHOULD_NOT_BE_EMPTY = 'Le champ Description ne peut être vide';
 
     public function __construct()
     {
+    }
+
+    /** @throws BadDataException*/
+    public function validateDTO(DTO $dto): void
+    {
+        $this
+            ->validateNameNotEmpty($dto->getName())
+            ->validateDescriptionNotEmpty($dto->getDescription());
+    }
+
+    /** @throws BadDataException */
+    private function validateDescriptionNotEmpty(string $description): self
+    {
+        empty($description) && throw new BadDataException(self::DESCRIPTION_SHOULD_NOT_BE_EMPTY);
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    private function validateNameNotEmpty(string $name): self
+    {
+        empty($name) && throw new BadDataException(self::NAME_SHOULD_NOT_BE_EMPTY);
+
+        return $this;
     }
 
     /** @throws BadDataException|NotFoundException */
