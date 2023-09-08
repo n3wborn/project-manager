@@ -5,13 +5,13 @@ namespace App\Service\Project;
 final class DTO
 {
     public function __construct(
-        private string $slug,
+        private ?string $slug,
         private string $name,
         private string $description,
     ) {
     }
 
-    public function getSlug(): string
+    public function getSlug(): ?string
     {
         return $this->slug;
     }
