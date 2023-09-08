@@ -32,10 +32,12 @@ final class ApiMessages
     }
 
     public const TRANSLATIONS = [
-        self::PROJECT_UPDATE_ERROR_MESSAGE => 'Oops, une erreur est survenue lors de la modification du projet',
         self::ERROR_EMPTY_PASSWORD_TERMS => 'Le mot de passe est nécessaire',
         self::ERROR_MAIL_TERMS => 'Votre mot de passe ou votre adresse mail est incorrect',
         self::ERROR_PASSWORD_TERMS => 'Votre mot de passe ou votre adresse mail est incorrect',
         self::FETCHING_USER_PROFILE_ERROR_MESSAGE => 'Oops, une erreur est survenue durant la récupération de vos données',
+        self::PROJECT_UPDATE_ERROR_MESSAGE => 'Oops, une erreur est survenue lors de la modification du projet',
+        self::PROJECT_UNKNOWN => "Le projet n'a pas été trouvé",
+        self::PROJECT_NOT_FOUND => "Le projet n'a pas été trouvé",
     ];
 }
