@@ -2,12 +2,7 @@ version: "3.4"
 
 services:
   php:
-    build:
-      context: .
-      target: app_php_dev
-      args:
-        HOST_USER: ${HOST_USER:-1000}
-        HOST_USERGROUP: ${HOST_USERGOUP:-1000}
+    image: ${IMAGES_PREFIX:-}app-php
     restart: unless-stopped
     volumes:
       - php_socket:/var/run/php
@@ -18,6 +13,8 @@ services:
       retries: 3
       start_period: 30s
     environment:
+      TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.0/8,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16}
+      TRUSTED_HOSTS: ^${SERVER_NAME:-example\.com|localhost}|caddy$$
       DATABASE_URL: postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-password}@database:5432/${POSTGRES_DB:-db_name}?serverVersion=${POSTGRES_VERSION:-15}&charset=${POSTGRES_CHARSET:-utf8}
       MERCURE_URL: ${CADDY_MERCURE_URL:-http://caddy/.well-known/mercure}
       MERCURE_PUBLIC_URL: https://${SERVER_NAME:-localhost}/.well-known/mercure
@@ -25,9 +22,7 @@ services:
       APP_ENV: ${APP_ENV:-dev}
 
   caddy:
-    build:
-      context: .
-      target: app_caddy
+    image: ${IMAGES_PREFIX:-}app-caddy
     depends_on:
       - php
     environment:
@@ -54,45 +49,7 @@ services:
         published: ${HTTP3_PORT:-443}
         protocol: udp
 
-  database:
-    image: postgres:${POSTGRES_VERSION:-15}-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-db_name}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
-      POSTGRES_USER: ${POSTGRES_USER:-user}
-    volumes:
-      - db-data:/var/lib/postgresql/data:rw
-
-  node:
-    env_file: .env
-    ports:
-      - 5173:5173
-    build:
-      context: ./docker/node/
-      args:
-        - HOST_USER=${HOST_USER:-1000}
-        - HOST_USERGROUP=${HOST_USERGROUP:-1000}
-    restart: unless-stopped
-    volumes:
-      - ./:/home/docker
-    command: "yarn dev"
-
-  mailer:
-    image: mailhog/mailhog:latest
-    ports:
-      - 1025
-      - "8025:8025"
-# Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
-
 volumes:
   php_socket:
   caddy_data:
   caddy_config:
-  db-data:
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###

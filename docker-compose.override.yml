@@ -4,7 +4,7 @@ version: "3.4"
 services:
   php:
     build:
-      target: app_php_dev
+      target: php_dev
     volumes:
       - ./:/srv/app
       - ./docker/php/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
@@ -29,8 +29,44 @@ services:
         "caddyfile",
         "--watch",
       ]
+    build:
+      context: .
+      target: caddy_base
     volumes:
-      - ./public:/srv/app/public
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
-###> symfony/mercure-bundle ###
-###< symfony/mercure-bundle ###
+      - ./public:/srv/app/public:ro
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+
+  database:
+    image: postgres:${POSTGRES_VERSION:-15}-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-db_name}
+      # You should definitely change the password in production
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+    volumes:
+      - db-data:/var/lib/postgresql/data:rw
+
+  node:
+    env_file: .env
+    ports:
+      - 5173:5173
+    build:
+      context: ./docker/node/
+      args:
+        - HOST_USER=${HOST_USER:-1000}
+        - HOST_USERGROUP=${HOST_USERGROUP:-1000}
+    restart: unless-stopped
+    volumes:
+      - ./:/home/docker
+    command: "yarn dev"
+
+  mailer:
+    image: mailhog/mailhog:latest
+    ports:
+      - 1025
+      - "8025:8025"
+
+volumes:
+  db-data:

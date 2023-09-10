@@ -19,8 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Pull images
-        run: docker compose pull
       - name: Build services
         run: docker compose build --no-cache
       - name: Start services
@@ -38,4 +36,4 @@ jobs:
       - name: Check HTTP reachability
         run: curl http://project-manager.localhost
       - name: Check HTTPS reachability
-        run: curl -k https://project-manager.localhost
+        run: curl -vk https://project-manager.localhost
