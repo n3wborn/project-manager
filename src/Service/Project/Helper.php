@@ -23,7 +23,7 @@ final class Helper
     }
 
     /** @throws NotFoundException  */
-    public static function validateRequestResource(Request $request, ?Project $project): void
+    public static function validateRequestResource(Request $request, Project $project): void
     {
         (self::isEditRoute($request) && (null === $project))
             && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_UNKNOWN));
