@@ -10,7 +10,7 @@ trait SluggableTrait
     #[ORM\Column(type: 'string', length: 255)]
     private ?string $slug = null;
 
-    final public function getSlug(): string
+    final public function getSlug(): ?string
     {
         return $this->slug;
     }
