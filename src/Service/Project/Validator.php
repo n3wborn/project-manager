@@ -18,7 +18,7 @@ final class Validator
     }
 
     /** @throws BadDataException*/
-    public function validateDTO(DTO $dto): void
+    public function validate(DTO $dto): void
     {
         $this
             ->validateNameNotEmpty($dto->getName())
@@ -62,7 +62,7 @@ final class Validator
     private function validateKnownEntity(?Project $project): self
     {
         !$project
-        && throw new NotFoundException(ApiMessages::PROJECT_UNKNOWN);
+        && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_UNKNOWN));
 
         return $this;
     }
