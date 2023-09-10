@@ -5,9 +5,9 @@ namespace App\Service\Project;
 final class DTO
 {
     public function __construct(
-        private ?string $slug,
-        private string $name,
-        private string $description,
+        private string $name = '',
+        private string $description = '',
+        private ?string $slug = null,
     ) {
     }
 

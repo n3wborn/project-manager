@@ -21,9 +21,9 @@ final class Mapper
     public static function fromEntityToDTO(Project $project): DTO
     {
         return new DTO(
-            $project->getSlug(),
             $project->getName(),
             $project->getDescription(),
+            $project->getSlug(),
         );
     }
 }
