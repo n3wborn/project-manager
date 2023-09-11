@@ -14,9 +14,9 @@ final class Finder
     ) {
     }
 
-    public function get(?Project $project): ?Project
+    public function get(Project $project): ?Project
     {
-        (null === $project)
+        $project->isArchived()
             && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_NOT_FOUND));
 
         return
@@ -30,5 +30,10 @@ final class Finder
     public function getAll(): array
     {
         return $this->projectRepository->findAll();
+    }
+
+    public function getAllNotArchived(): array
+    {
+        return $this->projectRepository->findBy(['archivedAt' => null]);
     }
 }

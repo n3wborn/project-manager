@@ -42,7 +42,7 @@ final class Handler
 
     public function handleGetAllProjects(): JsonResponse
     {
-        $projects = $this->finder->getAll();
+        $projects = $this->finder->getAllNotArchived();
         $result = array_map(static fn (Project $project) => Mapper::fromEntityToJson($project), $projects);
 
         return new ApiResponse($result);

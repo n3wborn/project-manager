@@ -4,6 +4,7 @@ namespace App\Service\Project;
 
 use App\Controller\ProjectController;
 use App\Entity\Project;
+use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
 use Doctrine\ORM\EntityManagerInterface;
@@ -36,10 +37,13 @@ final class Helper
             : ApiMessages::PROJECT_CREATE_SUCCESS_MESSAGE;
     }
 
-    /** @throws NotFoundException  */
-    public function validateRequestResource(Request $request): void
+    /** @throws NotFoundException|BadDataException  */
+    public function validateRequestResource(Request $request, Project $project): void
     {
         (self::isEditRoute($request) && (null === $this->editSlugParamExists($request)))
             && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_UNKNOWN));
+
+        $project->isArchived()
+            && throw new BadDataException(Validator::PROJECT_ALREADY_ARCHIVED);
     }
 }
