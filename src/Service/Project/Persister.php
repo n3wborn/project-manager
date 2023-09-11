@@ -18,6 +18,7 @@ final class Persister
     public function __construct(
         private Validator $validator,
         private EntityManagerInterface $em,
+        private Helper $helper,
         private LoggerInterface $logger,
         private SerializerInterface $serializer,
     ) {
@@ -26,7 +27,7 @@ final class Persister
     public function processRequest(Project $project, DTO $dto, Request $request): JsonResponse
     {
         try {
-            Helper::validateRequestResource($request, $project);
+            $this->helper->validateRequestResource($request, $project);
             $this->validator->validate($dto);
             $this->persist($project, $dto);
 

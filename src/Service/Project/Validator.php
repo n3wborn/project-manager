@@ -13,10 +13,6 @@ final class Validator
     public const NAME_SHOULD_NOT_BE_EMPTY = 'Le champ Nom ne peut être vide';
     public const DESCRIPTION_SHOULD_NOT_BE_EMPTY = 'Le champ Description ne peut être vide';
 
-    public function __construct()
-    {
-    }
-
     /** @throws BadDataException*/
     public function validate(DTO $dto): void
     {
