@@ -32,7 +32,7 @@ final class Persister
 
             $response = ApiResponse::createAndFormat(
                 Mapper::fromEntityToJson($project),
-                Helper::generateEditSucccessMessage($request)
+                Helper::generateEditSuccessMessage($request)
             );
         } catch (NotFoundException|BadDataException $exception) {
             $this->logger->error($exception->getMessage());

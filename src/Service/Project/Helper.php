@@ -15,7 +15,7 @@ final class Helper
         return ProjectController::ROUTE_EDIT === $request->get('_route');
     }
 
-    public static function generateEditSucccessMessage(Request $request): string
+    public static function generateEditSuccessMessage(Request $request): string
     {
         return ProjectController::ROUTE_EDIT === $request->get('_route')
             ? ApiMessages::PROJECT_UPDATE_SUCCESS_MESSAGE
