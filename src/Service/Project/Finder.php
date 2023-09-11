@@ -4,6 +4,7 @@ namespace App\Service\Project;
 
 use App\Entity\Project;
 use App\Exception\NotFoundException;
+use App\Helper\ApiMessages;
 use App\Repository\ProjectRepository;
 
 final class Finder
@@ -16,7 +17,7 @@ final class Finder
     public function get(?Project $project): ?Project
     {
         (null === $project)
-            && throw new NotFoundException();
+            && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_NOT_FOUND));
 
         return
             (

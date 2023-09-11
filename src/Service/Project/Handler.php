@@ -23,15 +23,14 @@ final class Handler
     public function handleGetProject(?Project $project): JsonResponse
     {
         try {
+            null === $project
+                && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_NOT_FOUND));
+
             $result = $this->finder->get($project);
-
-            null === $result
-                && throw new NotFoundException(ApiMessages::PROJECT_NOT_FOUND);
-
             $response = new ApiResponse(Mapper::fromEntityToJson($result));
         } catch (NotFoundException $exception) {
             $this->logger->notice($exception->getMessage());
-            $response = ApiResponse::createWarningMessage(ApiMessages::PROJECT_NOT_FOUND);
+            $response = ApiResponse::createWarningMessage($exception->getMessage());
         } catch (\Throwable $exception) {
             $this->logger->error($exception->getMessage());
             $this->logger->debug($exception->getTraceAsString());
