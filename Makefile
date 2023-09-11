@@ -11,7 +11,7 @@ SYMFONY  = $(PHP_CONT) bin/console
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up start down logs sh composer vendor sf cc
+.PHONY        : help build up start down logs sh composer vendor sf cc db-fixtures db-create db-migration db-reset db-restore db-drop db-save
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -26,6 +26,9 @@ build-pull-cache: ## Pull images, don't use cache and build the Docker image
 
 up: ## Start the docker hub
 	@$(DOCKER_COMP) up --force-recreate --remove-orphans
+
+up-renew-anon-volumes: ## Start the docker hub
+	@$(DOCKER_COMP) up --force-recreate --remove-orphans --renew-anon-volumes
 
 stop: ## Stop containers
 	@$(DOCKER_COMP) stop
@@ -57,3 +60,25 @@ sf: ## List all Symfony commands or pass the parameter "c=" to run a given comma
 
 cc: c=c:c ## Clear the cache
 cc: sf
+
+## —— Database ———————————————————————————————————————————————————————————————
+db-create:
+	@$(SYMFONY) doctrine:database:create --if-not-exists || true
+
+db-migration:
+	@$(SYMFONY) doctrine:migrations:migrate -n
+
+db-drop:
+	@$(SYMFONY) doctrine:database:drop --force || true
+
+db-save:
+	docker exec -it project-manager-database mysqldump -uroot -proot db_name | gzip > db.sql.gz
+
+db-restore:
+	gunzip -c db.sql.gz | docker exec -i project-manager-database -uroot -proot db_name
+
+db-reset: db-drop db-create db-migration db-fixtures
+
+db-fixtures:
+	@$(SYMFONY) doctrine:fixtures:load -n --env=dev
+
