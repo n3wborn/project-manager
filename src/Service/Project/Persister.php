@@ -7,8 +7,8 @@ use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
 use App\Helper\ApiResponse;
+use App\Helper\ExceptionLogger;
 use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -19,7 +19,7 @@ final class Persister
         private Validator $validator,
         private EntityManagerInterface $em,
         private Helper $helper,
-        private LoggerInterface $logger,
+        private ExceptionLogger $logger,
         private SerializerInterface $serializer,
     ) {
     }
@@ -36,11 +36,10 @@ final class Persister
                 Helper::generateEditSuccessMessage($request)
             );
         } catch (NotFoundException|BadDataException $exception) {
-            $this->logger->error($exception->getMessage());
+            $this->logger->logNotice($exception);
             $response = ApiResponse::createWarningMessage($exception->getMessage());
         } catch (\Throwable $exception) {
-            $this->logger->critical($exception->getMessage());
-            $this->logger->critical($exception->getTraceAsString());
+            $this->logger->logCriticalAndTrace($exception);
             $response = ApiResponse::createErrorMessage(ApiMessages::DEFAULT_ERROR_MESSAGE, exception: $exception);
         }
 

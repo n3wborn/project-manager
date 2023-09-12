@@ -6,7 +6,7 @@ use App\Entity\Project;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
 use App\Helper\ApiResponse;
-use Psr\Log\LoggerInterface;
+use App\Helper\ExceptionLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -14,7 +14,7 @@ final class Handler
 {
     public function __construct(
         private Finder $finder,
-        private LoggerInterface $logger,
+        private ExceptionLogger $logger,
         private Archiver $archiver,
         private Persister $persister,
     ) {
@@ -29,11 +29,10 @@ final class Handler
             $result = $this->finder->get($project);
             $response = new ApiResponse(Mapper::fromEntityToJson($result));
         } catch (NotFoundException $exception) {
-            $this->logger->notice($exception->getMessage());
+            $this->logger->logNotice($exception);
             $response = ApiResponse::createWarningMessage($exception->getMessage());
         } catch (\Throwable $exception) {
-            $this->logger->error($exception->getMessage());
-            $this->logger->debug($exception->getTraceAsString());
+            $this->logger->logCriticalAndTrace($exception);
             $response = ApiResponse::createErrorMessage(ApiMessages::DEFAULT_ERROR_MESSAGE, exception: $exception);
         }
 

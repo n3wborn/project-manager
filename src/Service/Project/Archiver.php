@@ -40,7 +40,7 @@ final class Archiver
             $this->logger->logNotice($exception);
             $response = ApiResponse::createWarningMessage($exception->getMessage());
         } catch (\Throwable $exception) {
-            $this->logger->logAndTrace($exception);
+            $this->logger->logCriticalAndTrace($exception);
             $response = ApiResponse::createErrorMessage(ApiMessages::DEFAULT_ERROR_MESSAGE, exception: $exception);
         }
 
