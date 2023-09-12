@@ -10,7 +10,7 @@ use App\Helper\ApiMessages;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
-final class Helper
+final class ProjectHelper
 {
     public function __construct(
         private EntityManagerInterface $em,
@@ -44,6 +44,6 @@ final class Helper
             && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_UNKNOWN));
 
         $project->isArchived()
-            && throw new BadDataException(Validator::PROJECT_ALREADY_ARCHIVED);
+            && throw new BadDataException(ProjectValidator::PROJECT_ALREADY_ARCHIVED);
     }
 }

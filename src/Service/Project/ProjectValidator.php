@@ -7,14 +7,14 @@ use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
 
-final class Validator
+final class ProjectValidator
 {
     public const PROJECT_ALREADY_ARCHIVED = 'Le projet est déjà archivé';
     public const NAME_SHOULD_NOT_BE_EMPTY = 'Le champ Nom ne peut être vide';
     public const DESCRIPTION_SHOULD_NOT_BE_EMPTY = 'Le champ Description ne peut être vide';
 
     /** @throws BadDataException*/
-    public function validate(DTO $dto): void
+    public function validate(ProjectDTO $dto): void
     {
         $this
             ->validateNameNotEmpty($dto->getName())

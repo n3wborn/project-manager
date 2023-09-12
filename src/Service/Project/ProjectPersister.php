@@ -13,18 +13,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 
-final class Persister
+final class ProjectPersister
 {
     public function __construct(
-        private Validator $validator,
+        private ProjectValidator $validator,
         private EntityManagerInterface $em,
-        private Helper $helper,
+        private ProjectHelper $helper,
         private ExceptionLogger $logger,
         private SerializerInterface $serializer,
     ) {
     }
 
-    public function processRequest(Project $project, DTO $dto, Request $request): JsonResponse
+    public function processRequest(Project $project, ProjectDTO $dto, Request $request): JsonResponse
     {
         try {
             $this->helper->validateRequestResource($request, $project);
@@ -32,8 +32,8 @@ final class Persister
             $this->persist($project, $dto);
 
             $response = ApiResponse::createAndFormat(
-                Mapper::fromEntityToJson($project),
-                Helper::generateEditSuccessMessage($request)
+                ProjectMapper::fromEntityToJson($project),
+                ProjectHelper::generateEditSuccessMessage($request)
             );
         } catch (NotFoundException|BadDataException $exception) {
             $this->logger->logNotice($exception);
@@ -47,7 +47,7 @@ final class Persister
     }
 
     /** @throws NotFoundException  */
-    public function persist(?Project $project, DTO $dto): void
+    public function persist(?Project $project, ProjectDTO $dto): void
     {
         $project
             ->setName($dto->getName())

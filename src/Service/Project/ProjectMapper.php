@@ -7,7 +7,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
-final class Mapper
+final class ProjectMapper
 {
     /** @throws ExceptionInterface */
     public static function fromEntityToJson(Project $project): mixed
@@ -18,9 +18,9 @@ final class Mapper
         return $serializer->normalize($dto, JsonEncoder::FORMAT);
     }
 
-    public static function fromEntityToDTO(Project $project): DTO
+    public static function fromEntityToDTO(Project $project): ProjectDTO
     {
-        return new DTO(
+        return new ProjectDTO(
             $project->getName(),
             $project->getDescription(),
             $project->getSlug(),
