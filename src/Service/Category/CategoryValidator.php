@@ -31,7 +31,7 @@ final class CategoryValidator
     /** @throws BadDataException*/
     private function validateNameIsUnique(string $name): self
     {
-        $this->categoryRepository->findBy(['name' => $name])
+        $this->categoryRepository->findBy(['name' => $name, 'archivedAt' => null])
             && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
 
         return $this;

@@ -52,9 +52,10 @@ final class ProjectValidator
             ->validateNameIsUnique($name);
     }
 
+    /** @throws BadDataException */
     private function validateNameIsUnique(string $name): self
     {
-        $this->projectRepository->findBy(['name' => $name])
+        $this->projectRepository->findBy(['name' => $name, 'archivedAt' => null])
             && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
 
         return $this;
