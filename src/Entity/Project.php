@@ -35,7 +35,7 @@ class Project
     #[ORM\Column(nullable: true, type: 'datetime_immutable')]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'projects', fetch: 'EAGER')]
+    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'projects', cascade: ['persist'], fetch: 'EAGER', orphanRemoval: true)]
     private Collection $categories;
 
     public function __construct()
