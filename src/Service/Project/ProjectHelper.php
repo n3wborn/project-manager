@@ -46,4 +46,9 @@ final class ProjectHelper
         $project->isArchived()
             && throw new BadDataException(ProjectValidator::PROJECT_ALREADY_ARCHIVED);
     }
+
+    public static function projectExists(?Project $project): bool
+    {
+        return (!$project->isArchived()) && (null !== $project);
+    }
 }
