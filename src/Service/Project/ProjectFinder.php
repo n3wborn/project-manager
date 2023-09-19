@@ -7,7 +7,7 @@ use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
 use App\Repository\ProjectRepository;
 
-final class Finder
+final class ProjectFinder
 {
     public function __construct(
         private ProjectRepository $projectRepository,
@@ -34,6 +34,6 @@ final class Finder
 
     public function getAllNotArchived(): array
     {
-        return $this->projectRepository->findBy(['archivedAt' => null]);
+        return $this->projectRepository->findAllNotArchived();
     }
 }

@@ -6,17 +6,17 @@ use App\Entity\Project;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
 use App\Helper\ApiResponse;
-use Psr\Log\LoggerInterface;
+use App\Helper\ExceptionLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-final class Handler
+final class ProjectHandler
 {
     public function __construct(
-        private Finder $finder,
-        private LoggerInterface $logger,
-        private Archiver $archiver,
-        private Persister $persister,
+        private ProjectFinder $finder,
+        private ExceptionLogger $logger,
+        private ProjectArchiver $archiver,
+        private ProjectPersister $persister,
     ) {
     }
 
@@ -27,13 +27,12 @@ final class Handler
                 && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_NOT_FOUND));
 
             $result = $this->finder->get($project);
-            $response = new ApiResponse(Mapper::fromEntityToJson($result));
+            $response = new ApiResponse(ProjectMapper::fromEntityToJson($result));
         } catch (NotFoundException $exception) {
-            $this->logger->notice($exception->getMessage());
+            $this->logger->logNotice($exception);
             $response = ApiResponse::createWarningMessage($exception->getMessage());
         } catch (\Throwable $exception) {
-            $this->logger->error($exception->getMessage());
-            $this->logger->debug($exception->getTraceAsString());
+            $this->logger->logCriticalAndTrace($exception);
             $response = ApiResponse::createErrorMessage(ApiMessages::DEFAULT_ERROR_MESSAGE, exception: $exception);
         }
 
@@ -43,12 +42,12 @@ final class Handler
     public function handleGetAllProjects(): JsonResponse
     {
         $projects = $this->finder->getAllNotArchived();
-        $result = array_map(static fn (Project $project) => Mapper::fromEntityToJson($project), $projects);
+        $result = array_map(static fn (Project $project) => ProjectMapper::fromEntityToJson($project), $projects);
 
         return new ApiResponse($result);
     }
 
-    public function handlePersistProject(?Project $project, Request $request, DTO $dto): JsonResponse
+    public function handlePersistProject(?Project $project, Request $request, ProjectDTO $dto): JsonResponse
     {
         return $this->persister->processRequest($project ?? new Project(), $dto, $request);
     }

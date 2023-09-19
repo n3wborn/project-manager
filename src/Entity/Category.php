@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\ProjectRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
-#[ORM\Entity(repositoryClass: ProjectRepository::class)]
-#[ORM\Table(name: 'project')]
+#[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[ORM\Table(name: 'category')]
 #[ORM\HasLifecycleCallbacks]
-class Project
+class Category
 {
     use ArchivableEntity;
     use SluggableTrait;
@@ -23,11 +23,8 @@ class Project
     #[ORM\CustomIdGenerator(class: 'doctrine.uuid_generator')]
     private ?Uuid $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $description = null;
 
     #[ORM\Column(type: 'datetime_immutable')]
     private ?\DateTimeImmutable $createdAt = null;
@@ -35,12 +32,12 @@ class Project
     #[ORM\Column(nullable: true, type: 'datetime_immutable')]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'projects', cascade: ['persist'], fetch: 'EAGER', orphanRemoval: true)]
-    private Collection $categories;
+    #[ORM\ManyToMany(targetEntity: Project::class, inversedBy: 'categories', cascade: ['persist'], fetch: 'EAGER', orphanRemoval: true)]
+    private Collection $projects;
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
+        $this->projects = new ArrayCollection();
     }
 
     final public function getId(): ?Uuid
@@ -53,21 +50,9 @@ class Project
         return $this->name;
     }
 
-    final public function setName(string $name): self
+    final public function setName(?string $name): self
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    final public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    final public function setDescription(string $description): self
-    {
-        $this->description = $description;
 
         return $this;
     }
@@ -108,24 +93,22 @@ class Project
         $this->updatedAt = new \DateTimeImmutable();
     }
 
-    public function getCategories(): Collection
+    final public function getProjects(): Collection
     {
-        return $this->categories;
+        return $this->projects;
     }
 
-    public function addCategory(Category $category): self
+    final public function addProject(Project $project): self
     {
-        !$this->categories->contains($category)
-            && $this->categories->add($category)
-            && $category->addProject($this);
+        !$this->projects->contains($project)
+        && $this->projects->add($project);
 
         return $this;
     }
 
-    public function removeCategory(Category $category): self
+    final public function removeProject(Project $project): self
     {
-        $this->categories->removeElement($category)
-        && $category->removeProject($this);
+        $this->projects->removeElement($project);
 
         return $this;
     }

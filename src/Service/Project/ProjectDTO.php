@@ -2,7 +2,7 @@
 
 namespace App\Service\Project;
 
-final class DTO
+final class ProjectDTO
 {
     public function __construct(
         private string $name = '',

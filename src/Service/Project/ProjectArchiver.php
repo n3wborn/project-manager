@@ -11,12 +11,12 @@ use App\Helper\ExceptionLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-final class Archiver
+final class ProjectArchiver
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
-        private Validator $validator,
-        private Mapper $mapper,
+        private ProjectValidator $validator,
+        private ProjectMapper $mapper,
         private ExceptionLogger $logger,
     ) {
     }
@@ -34,13 +34,13 @@ final class Archiver
             $this->softDelete($project);
 
             $response = ApiResponse::createAndFormat(
-                Mapper::fromEntityToJson($project),
+                ProjectMapper::fromEntityToJson($project),
                 ApiMessages::PROJECT_DELETE_SUCCESS_MESSAGE);
         } catch (NotFoundException|BadDataException $exception) {
             $this->logger->logNotice($exception);
             $response = ApiResponse::createWarningMessage($exception->getMessage());
         } catch (\Throwable $exception) {
-            $this->logger->logAndTrace($exception);
+            $this->logger->logCriticalAndTrace($exception);
             $response = ApiResponse::createErrorMessage(ApiMessages::DEFAULT_ERROR_MESSAGE, exception: $exception);
         }
 

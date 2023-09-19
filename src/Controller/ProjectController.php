@@ -3,8 +3,9 @@
 namespace App\Controller;
 
 use App\Entity\Project;
-use App\Service\Project\DTO;
-use App\Service\Project\Handler;
+use App\Service\Category\CategoryFinder;
+use App\Service\Project\ProjectDTO;
+use App\Service\Project\ProjectHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 final class ProjectController extends AbstractController
 {
     public function __construct(
-        private Handler $handler,
+        private ProjectHandler $handler,
     ) {
     }
 
@@ -34,7 +35,7 @@ final class ProjectController extends AbstractController
     #[Route('/project/{slug}', name: self::ROUTE_EDIT, methods: Request::METHOD_POST)]
     public function persistProject(
         ?Project $project,
-        #[MapRequestPayload()] ?DTO $dto,
+        #[MapRequestPayload()] ?ProjectDTO $dto,
         Request $request,
     ): JsonResponse {
         return $this->handler->handlePersistProject($project, $request, $dto);
