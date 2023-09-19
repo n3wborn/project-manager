@@ -10,7 +10,7 @@ use App\Repository\CategoryRepository;
 
 final class CategoryValidator
 {
-    public const CATEGORY_ALREADY_ARCHIVED = 'La catégorie est déjà archivée';
+    public const CATEGORY_ALREADY_ARCHIVED = 'La catégorie a déja été supprimée';
     public const NAME_SHOULD_BE_UNIQUE = 'La catégorie doit avoir un nom unique';
     public const NAME_SHOULD_NOT_BE_EMPTY = 'Le champ Nom ne peut être vide';
 
