@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Project;
-use App\Service\Category\CategoryFinder;
 use App\Service\Project\ProjectDTO;
 use App\Service\Project\ProjectHandler;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,6 +23,7 @@ final class ProjectController extends AbstractController
     public const ROUTE_EDIT = 'project_edit';
     public const ROUTE_FETCH = 'project_fetch';
     public const ROUTE_FIND_ALL = 'project_find_all';
+    public const ROUTE_GET_CATEGORIES = 'project_get_categories';
 
     #[Route('/project/{slug}', name: self::ROUTE_FETCH, methods: Request::METHOD_GET)]
     public function getProject(?Project $project): JsonResponse
@@ -47,9 +47,16 @@ final class ProjectController extends AbstractController
         return $this->handler->handleGetAllProjects();
     }
 
-    #[Route('/project/{slug}', name: self::ROUTE_ARCHIVE, methods: 'DELETE')]
+    #[Route('/project/{slug}', name: self::ROUTE_ARCHIVE, methods: Request::METHOD_DELETE)]
     public function classeArchive(?Project $project): JsonResponse
     {
         return $this->handler->handleArchiveProject($project);
+    }
+
+    #[Route('/project/{slug}/categories', name: self::ROUTE_GET_CATEGORIES, methods: Request::METHOD_GET)]
+    public function getCategories(
+        ?Project $project,
+    ): JsonResponse {
+        return $this->handler->handleGetProjectCategories($project);
     }
 }

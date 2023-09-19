@@ -2,6 +2,7 @@
 
 namespace App\Service\Project;
 
+use App\Entity\Category;
 use App\Entity\Project;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
@@ -35,5 +36,17 @@ final class ProjectFinder
     public function getAllNotArchived(): array
     {
         return $this->projectRepository->findAllNotArchived();
+    }
+
+    /** @throws NotFoundException */
+    public function getProjectCategories(?Project $project): array
+    {
+        (!ProjectHelper::projectExists($project))
+            && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_NOT_FOUND));
+
+        return array_filter(
+            $project->getCategories()->toArray(),
+            fn (Category $category) => !$category->isArchived()
+        );
     }
 }
