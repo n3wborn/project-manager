@@ -16,7 +16,7 @@ final class ProjectValidator
     public const PROJECT_ALREADY_ARCHIVED = 'Le projet est déjà archivé';
 
     public function __construct(
-        private ProjectRepository $ProjectRepository,
+        private ProjectRepository $projectRepository,
     ) {
     }
 
