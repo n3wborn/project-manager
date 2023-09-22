@@ -26,7 +26,7 @@ final class CategoryPersister
     {
         try {
             $this->helper->validateRequestResource($request, $category);
-            $this->validator->validate($dto);
+            $this->validator->validate($dto, $this->helper->isEditRoute($request));
             $this->persist($category, $dto);
 
             $response = ApiResponse::createAndFormat(
