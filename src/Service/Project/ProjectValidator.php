@@ -13,7 +13,7 @@ final class ProjectValidator
     public const DESCRIPTION_SHOULD_NOT_BE_EMPTY = 'Le champ Description ne peut être vide';
     public const NAME_SHOULD_BE_UNIQUE = 'Le projet doit avoir un nom unique';
     public const NAME_SHOULD_NOT_BE_EMPTY = 'Le champ Nom ne peut être vide';
-    public const PROJECT_ALREADY_ARCHIVED = 'Le projet a déja été supprimé';
+    public const PROJECT_ALREADY_ARCHIVED = 'Le projet est inexistant ou a déja été supprimé';
 
     public function __construct(
         private ProjectRepository $projectRepository,
