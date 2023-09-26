@@ -21,10 +21,10 @@ final class ProjectValidator
     }
 
     /** @throws BadDataException*/
-    public function validate(ProjectDTO $dto): void
+    public function validate(ProjectDTO $dto, bool $isEditRoute = true): void
     {
         $this
-            ->validateName($dto->getName())
+            ->validateName($dto, $isEditRoute)
             ->validateDescriptionNotEmpty($dto->getDescription());
     }
 
@@ -45,11 +45,36 @@ final class ProjectValidator
     }
 
     /** @throws BadDataException */
-    private function validateName(string $name): self
+    private function validateName(ProjectDTO $dto, bool $isEditRoute = true): self
     {
-        return $this
-            ->validateNameNotEmpty($name)
-            ->validateNameIsUnique($name);
+        $this->validateNameNotEmpty($dto->getName());
+
+        $isEditRoute
+            ? $this->validateEditionName($dto)
+            : $this->validateCreationName($dto);
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    public function validateCreationName(ProjectDTO $dto): self
+    {
+        (null !== $this->projectRepository->findNotArchivedByName($dto->getName()))
+            && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    public function validateEditionName(ProjectDTO $dto): self
+    {
+        $existingProject = $this->projectRepository->findNotArchivedByName($dto->getName());
+
+        (null !== $existingProject)
+            && ($existingProject->getSlug() !== $dto->getSlug())
+            && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
+
+        return $this;
     }
 
     /** @throws BadDataException */

@@ -28,7 +28,7 @@ final class ProjectPersister
     {
         try {
             $this->helper->validateRequestResource($request, $project);
-            $this->validator->validate($dto);
+            $this->validator->validate($dto, $this->helper->isEditRoute($request));
             $this->persist($project, $dto);
 
             $response = ApiResponse::createAndFormat(
