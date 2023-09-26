@@ -52,6 +52,15 @@ class ProjectRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findNotArchivedByName(string $name): ?Project
+    {
+        return ($qb = $this->getQueryBuilder())
+            ->where($qb->expr()->isNull('p.archivedAt'))
+            ->andWhere($qb->expr()->eq('p.name', ':name'))
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
     //    /**
     //     * @return Project[] Returns an array of Project objects
     //     */
