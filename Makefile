@@ -11,7 +11,7 @@ SYMFONY  = $(PHP_CONT) bin/console
 
 # Misc
 .DEFAULT_GOAL = help
-.PHONY        : help build up start down logs sh composer vendor sf cc db-fixtures db-create db-migration db-reset db-restore db-drop db-save
+.PHONY        : help build build-no-cache up up-pull-wait up-renew-anon-volumes start down logs sh composer vendor sf cc db-fixtures db-create db-migration db-reset db-restore db-drop db-save
 
 ## —— 🎵 🐳 The Symfony Docker Makefile 🐳 🎵 ——————————————————————————————————
 help: ## Outputs this help screen
@@ -21,11 +21,14 @@ help: ## Outputs this help screen
 build: ## Builds the Docker images
 	@$(DOCKER_COMP) build
 
-build-pull-cache: ## Pull images, don't use cache and build the Docker image
-	@$(DOCKER_COMP) build --pull --no-cache
+build-no-cache: ## Pull images, don't use cache and build the Docker image
+	@$(DOCKER_COMP) build --no-cache
+
+up-pull-wait:
+	@$(DOCKER_COMP) up --pull --wait
 
 up: ## Start the docker hub
-	@$(DOCKER_COMP) up --force-recreate --remove-orphans
+	@$(DOCKER_COMP) up
 
 up-renew-anon-volumes: ## Start the docker hub
 	@$(DOCKER_COMP) up --force-recreate --remove-orphans --renew-anon-volumes
@@ -81,4 +84,3 @@ db-reset: db-drop db-create db-migration db-fixtures
 
 db-fixtures:
 	@$(SYMFONY) doctrine:fixtures:load -n --env=dev
-
