@@ -22,22 +22,30 @@ final class CategoryValidator
     /** @throws BadDataException*/
     public function validate(CategoryDTO $dto, bool $isEditRoute = true): void
     {
-        $this
-            ->validateNameNotEmpty($dto->getName())
-            ->validateNameDoesNotExist($dto, $isEditRoute);
+        $this->validateNameNotEmpty($dto->getName());
+
+        $isEditRoute
+            ? $this->validateEditionName($dto)
+            : $this->validateCreationName($dto);
     }
 
     /** @throws BadDataException */
-    public function validateNameDoesNotExist(CategoryDTO $dto, bool $onEdit = true): self
+    public function validateCreationName(CategoryDTO $dto): self
     {
-        ($CategoryByName = $this->categoryRepository->findOneBy(['name' => $dto->getName(), 'archivedAt' => null])) instanceof Category
-        && (
-            (
-                $onEdit
-                && ($CategoryBySlug = $this->categoryRepository->findOneBySlug($dto->getSlug())) instanceof Category
-                && $CategoryByName->getId() !== $CategoryBySlug->getId()
-            ) || !$onEdit
-        ) && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
+        (null !== $this->categoryRepository->findNotArchivedByName($dto->getName()))
+            && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    public function validateEditionName(CategoryDTO $dto): self
+    {
+        $existingCategory = $this->categoryRepository->findNotArchivedByName($dto->getName());
+
+        (null !== $existingCategory)
+            && ($existingCategory->getSlug() !== $dto->getSlug())
+            && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
 
         return $this;
     }
