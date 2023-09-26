@@ -4,42 +4,27 @@ version: "3.4"
 services:
   php:
     build:
-      target: php_dev
+      context: .
+      target: frankenphp_dev
     volumes:
-      - ./:/srv/app
-      - ./docker/php/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
-      # If you develop on Mac or Windows you can remove the vendor/ directory
-      #  from the bind-mount for better performance by enabling the next line:
-      #- /srv/app/vendor
+      - ./:/app
+      - ./docker/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./docker/frankenphp/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
     environment:
+      MERCURE_EXTRA_DIRECTIVES: demo
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+      TRUSTED_HOSTS: ^${SERVER_NAME:-project-manager\.localhost|localhost}|php$$
+      DATABASE_URL: postgresql://user:password@database:5432/db_name?serverVersion=15&charset=${POSTGRES_CHARSET:-utf8}
+      POSTGRES_DB: db_name
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
 
-  caddy:
-    command:
-      [
-        "caddy",
-        "run",
-        "--config",
-        "/etc/caddy/Caddyfile",
-        "--adapter",
-        "caddyfile",
-        "--watch",
-      ]
-    build:
-      context: .
-      target: caddy_base
-    volumes:
-      - ./public:/srv/app/public:ro
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-
   database:
     image: postgres:${POSTGRES_VERSION:-15}-alpine
     ports:
-      - "5432:5432"
+      - "5432"
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-db_name}
       # You should definitely change the password in production

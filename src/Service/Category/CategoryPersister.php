@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Service\Project;
+namespace App\Service\Category;
 
-use App\Entity\Project;
+use App\Entity\Category;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
@@ -11,29 +11,27 @@ use App\Helper\ExceptionLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
 
-final class ProjectPersister
+final class CategoryPersister
 {
     public function __construct(
-        private ProjectValidator $validator,
-        private EntityManagerInterface $em,
-        private ProjectHelper $helper,
+        private CategoryHelper $helper,
         private ExceptionLogger $logger,
-        private SerializerInterface $serializer,
+        private CategoryValidator $validator,
+        private EntityManagerInterface $em,
     ) {
     }
 
-    public function processRequest(Project $project, ProjectDTO $dto, Request $request): JsonResponse
+    public function processRequest(Category $category, CategoryDTO $dto, Request $request): JsonResponse
     {
         try {
-            $this->helper->validateRequestResource($request, $project);
+            $this->helper->validateRequestResource($request, $category);
             $this->validator->validate($dto, $this->helper->isEditRoute($request));
-            $this->persist($project, $dto);
+            $this->persist($category, $dto);
 
             $response = ApiResponse::createAndFormat(
-                ProjectMapper::fromEntityToJson($project),
-                ProjectHelper::generateEditSuccessMessage($request)
+                CategoryMapper::fromEntityToJson($category),
+                CategoryHelper::generateEditSuccessMessage($request)
             );
         } catch (NotFoundException|BadDataException $exception) {
             $this->logger->logNotice($exception);
@@ -47,11 +45,9 @@ final class ProjectPersister
     }
 
     /** @throws NotFoundException  */
-    public function persist(?Project $project, ProjectDTO $dto): void
+    public function persist(?Category $project, CategoryDTO $dto): void
     {
-        $project
-            ->setName($dto->getName())
-            ->setDescription($dto->getDescription());
+        $project->setName($dto->getName());
 
         $this->em->persist($project);
         $this->em->flush();

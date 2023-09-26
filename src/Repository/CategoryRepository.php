@@ -52,6 +52,16 @@ class CategoryRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    public function findNotArchivedByName(string $name): ?Category
+    {
+        return ($qb = $this->getQueryBuilder())
+            ->where($qb->expr()->isNull('c.archivedAt'))
+            ->andWhere($qb->expr()->eq('c.name', ':name'))
+            ->setParameter('name', $name)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     //    /**
     //     * @return Category[] Returns an array of Category objects
     //     */

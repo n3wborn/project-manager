@@ -5,6 +5,15 @@ namespace App\Helper;
 final class ApiMessages
 {
     public const ACCESS_DENIED_EXCEPTION_MESSAGE = "Vous n'êtes pas autorisé à accéder à cette page";
+    public const CATEGORY_CREATE_ERROR_MESSAGE = 'An error occurred while persisting category';
+    public const CATEGORY_CREATE_SUCCESS_MESSAGE = 'La catégorie a bien été créé';
+    public const CATEGORY_DELETE_ERROR_MESSAGE = 'An error occurred during category removal';
+    public const CATEGORY_DELETE_SUCCESS_MESSAGE = 'La catégorie a bien été supprimée';
+    public const CATEGORY_NAME_UNAVAILABLE = 'Category name already exists';
+    public const CATEGORY_NOT_FOUND = 'Category not found';
+    public const CATEGORY_UNKNOWN = 'Category not found';
+    public const CATEGORY_UPDATE_ERROR_MESSAGE = 'An error occurred during category update';
+    public const CATEGORY_UPDATE_SUCCESS_MESSAGE = 'Le projet a bien été mis à jour';
     public const DEFAULT_ERROR_MESSAGE = 'Oops, an error occured...';
     public const DEFAULT_NOT_FOUND_MESSAGE = "La ressource demandée n'a pas été trouvée";
     public const DEFAULT_UNSUPPORTED_FORMAT_MESSAGE = 'La sérialisation a échouée';
@@ -19,6 +28,7 @@ final class ApiMessages
     public const INDEX_STATUS = 'status';
     public const INDEX_SUCCESS = 'success';
     public const INDEX_WARNING = 'warning';
+    public const LISTING_ERROR = 'Une erreur est survenue durant la récupération du listing';
     public const MESSAGE_OK = 'OK';
     public const PROJECT_CREATE_ERROR_MESSAGE = 'An error occurred while persisting project';
     public const PROJECT_CREATE_SUCCESS_MESSAGE = 'Le project a bien été créé';
@@ -36,6 +46,9 @@ final class ApiMessages
     }
 
     public const TRANSLATIONS = [
+        self::CATEGORY_NOT_FOUND => "La catégorie n'a pas été trouvée",
+        self::CATEGORY_UNKNOWN => "La catégorie n'a pas été trouvée",
+        self::CATEGORY_UPDATE_ERROR_MESSAGE => 'Oops, une erreur est survenue lors de la modification de la catégorie',
         self::ERROR_EMPTY_PASSWORD_TERMS => 'Le mot de passe est nécessaire',
         self::ERROR_MAIL_TERMS => 'Votre mot de passe ou votre adresse mail est incorrect',
         self::ERROR_PASSWORD_TERMS => 'Votre mot de passe ou votre adresse mail est incorrect',

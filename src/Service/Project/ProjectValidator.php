@@ -6,18 +6,25 @@ use App\Entity\Project;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
+use App\Repository\ProjectRepository;
 
 final class ProjectValidator
 {
-    public const PROJECT_ALREADY_ARCHIVED = 'Le projet est déjà archivé';
-    public const NAME_SHOULD_NOT_BE_EMPTY = 'Le champ Nom ne peut être vide';
     public const DESCRIPTION_SHOULD_NOT_BE_EMPTY = 'Le champ Description ne peut être vide';
+    public const NAME_SHOULD_BE_UNIQUE = 'Le projet doit avoir un nom unique';
+    public const NAME_SHOULD_NOT_BE_EMPTY = 'Le champ Nom ne peut être vide';
+    public const PROJECT_ALREADY_ARCHIVED = 'Le projet est inexistant ou a déja été supprimé';
+
+    public function __construct(
+        private ProjectRepository $projectRepository,
+    ) {
+    }
 
     /** @throws BadDataException*/
-    public function validate(ProjectDTO $dto): void
+    public function validate(ProjectDTO $dto, bool $isEditRoute = true): void
     {
         $this
-            ->validateNameNotEmpty($dto->getName())
+            ->validateName($dto, $isEditRoute)
             ->validateDescriptionNotEmpty($dto->getDescription());
     }
 
@@ -33,6 +40,48 @@ final class ProjectValidator
     private function validateNameNotEmpty(string $name): self
     {
         empty($name) && throw new BadDataException(self::NAME_SHOULD_NOT_BE_EMPTY);
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    private function validateName(ProjectDTO $dto, bool $isEditRoute = true): self
+    {
+        $this->validateNameNotEmpty($dto->getName());
+
+        $isEditRoute
+            ? $this->validateEditionName($dto)
+            : $this->validateCreationName($dto);
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    public function validateCreationName(ProjectDTO $dto): self
+    {
+        (null !== $this->projectRepository->findNotArchivedByName($dto->getName()))
+            && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    public function validateEditionName(ProjectDTO $dto): self
+    {
+        $existingProject = $this->projectRepository->findNotArchivedByName($dto->getName());
+
+        (null !== $existingProject)
+            && ($existingProject->getSlug() !== $dto->getSlug())
+            && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    private function validateNameIsUnique(string $name): self
+    {
+        $this->projectRepository->findBy(['name' => $name, 'archivedAt' => null])
+            && throw new BadDataException(self::NAME_SHOULD_BE_UNIQUE);
 
         return $this;
     }

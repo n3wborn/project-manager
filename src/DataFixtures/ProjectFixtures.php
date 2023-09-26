@@ -20,13 +20,14 @@ final class ProjectFixtures extends Fixture implements OrderedFixtureInterface
     public function load(ObjectManager $manager): void
     {
         for ($i = 1; $i <= self::QUANTITY; ++$i) {
-            $count = rand(1, 5);
             $project = $this->createProject($i);
-            $manager->persist($project);
+            $count = rand(1, 5);
 
             for ($j = 1; $j <= $count; ++$j) {
                 $randCategory = $this->categoryRepository->findOneBy(['name' => 'category-'.rand(1, CategoryFixtures::CATEGORY_QUANTITY)]);
                 $randCategory->addProject($project);
+                $project->addCategory($randCategory);
+                $manager->persist($project);
                 $manager->persist($randCategory);
             }
         }
