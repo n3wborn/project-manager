@@ -8,6 +8,7 @@ use App\Entity\Project;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
+use App\Service\Project\ProjectMapper;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -59,5 +60,23 @@ final class CategoryHelper
     public static function categoryExists(?Category $category): bool
     {
         return (!$category?->isArchived()) && (null !== $category);
+    }
+
+    public static function getCategoryAndProjectsInfos(?Category $category): array
+    {
+        $projects = array_filter(
+            $category->getProjects()->toArray(),
+            fn (Project $project) => !$project->isArchived()
+        );
+
+        $categoryProjects = array_map(
+            static fn (Project $project) => ProjectMapper::fromEntityToJson($project),
+            $projects
+        );
+
+        return [
+            'category' => CategoryMapper::fromEntityToJson($category),
+            'projects' => $categoryProjects,
+        ];
     }
 }
