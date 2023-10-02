@@ -51,7 +51,7 @@ final class ProjectHelper
 
     public static function projectExists(?Project $project): bool
     {
-        return (!$project->isArchived()) && (null !== $project);
+        return (!$project?->isArchived()) && (null !== $project);
     }
 
     public static function getProjectAndCategoriesInfos(?Project $project): array

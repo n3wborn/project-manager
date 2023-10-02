@@ -58,6 +58,6 @@ final class CategoryHelper
 
     public static function categoryExists(?Category $category): bool
     {
-        return (!$category->isArchived()) && (null !== $category);
+        return (!$category?->isArchived()) && (null !== $category);
     }
 }
