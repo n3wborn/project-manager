@@ -8,6 +8,7 @@ final class ProjectDTO
         private string $name = '',
         private string $description = '',
         private ?string $slug = null,
+        private array $categories = [],
     ) {
     }
 
@@ -43,6 +44,18 @@ final class ProjectDTO
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getCategories(): array
+    {
+        return $this->categories;
+    }
+
+    public function setCategories(array $categories): self
+    {
+        $this->categories = $categories;
 
         return $this;
     }

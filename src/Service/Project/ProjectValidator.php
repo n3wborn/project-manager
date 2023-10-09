@@ -14,6 +14,7 @@ final class ProjectValidator
     public const NAME_SHOULD_BE_UNIQUE = 'Le projet doit avoir un nom unique';
     public const NAME_SHOULD_NOT_BE_EMPTY = 'Le champ Nom ne peut être vide';
     public const PROJECT_ALREADY_ARCHIVED = 'Le projet est inexistant ou a déja été supprimé';
+    public const CATEGORY_SLUG_INVALID = 'Au moins une des catégorie est invalide';
 
     public function __construct(
         private ProjectRepository $projectRepository,
@@ -25,13 +26,34 @@ final class ProjectValidator
     {
         $this
             ->validateName($dto, $isEditRoute)
-            ->validateDescriptionNotEmpty($dto->getDescription());
+            ->validateDescriptionNotEmpty($dto)
+            ->validateCategories($dto)
+        ;
     }
 
     /** @throws BadDataException */
-    private function validateDescriptionNotEmpty(string $description): self
+    private function validateCategories(ProjectDTO $dto): self
     {
-        empty($description) && throw new BadDataException(self::DESCRIPTION_SHOULD_NOT_BE_EMPTY);
+        // get related Category entity (?) -> check if exists -> check if
+        foreach ($dto->getCategories() as $category) {
+            $this->validateCategory($category);
+        }
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    private function validateCategory(mixed $categorySlug): self
+    {
+        !is_string($categorySlug['slug']) && throw new BadDataException(self::CATEGORY_SLUG_INVALID);
+
+        return $this;
+    }
+
+    /** @throws BadDataException */
+    private function validateDescriptionNotEmpty(ProjectDTO $dto): self
+    {
+        empty($dto->getDescription()) && throw new BadDataException(self::DESCRIPTION_SHOULD_NOT_BE_EMPTY);
 
         return $this;
     }

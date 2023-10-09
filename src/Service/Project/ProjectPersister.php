@@ -11,7 +11,6 @@ use App\Helper\ExceptionLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
 
 final class ProjectPersister
 {
@@ -20,7 +19,6 @@ final class ProjectPersister
         private EntityManagerInterface $em,
         private ProjectHelper $helper,
         private ExceptionLogger $logger,
-        private SerializerInterface $serializer,
     ) {
     }
 

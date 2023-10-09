@@ -24,6 +24,8 @@ final class ProjectMapper
             $project->getName(),
             $project->getDescription(),
             $project->getSlug(),
+            // @todo: remove circular reference here
+            $project->getCategories()->toArray()
         );
     }
 }

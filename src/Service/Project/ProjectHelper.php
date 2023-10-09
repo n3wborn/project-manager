@@ -71,4 +71,12 @@ final class ProjectHelper
             'categories' => $projectCategories,
         ];
     }
+
+    public static function getCategoriesFromDTO(ProjectDTO $dto): array
+    {
+        return array_map(
+            static fn ($category) => $category['slug'],
+            $dto->getCategories()
+        );
+    }
 }
