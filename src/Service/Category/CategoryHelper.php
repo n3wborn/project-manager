@@ -79,4 +79,15 @@ final class CategoryHelper
             'projects' => $categoryProjects,
         ];
     }
+
+    public static function getProjectsArrayFromCategory(Category $category): array
+    {
+        return array_map(
+            static fn (Project $project) => [
+                'name' => $project->getName(),
+                'slug' => $project->getSlug(),
+            ],
+            $category->getProjects()->toArray()
+        );
+    }
 }
