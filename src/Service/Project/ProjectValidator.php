@@ -23,7 +23,7 @@ final class ProjectValidator
     ) {
     }
 
-    /** @throws BadDataException*/
+    /** @throws BadDataException */
     public function validate(ProjectDTO $dto, bool $isEditRoute = true): void
     {
         $this

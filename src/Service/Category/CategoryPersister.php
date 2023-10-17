@@ -44,7 +44,7 @@ final class CategoryPersister
         return $response;
     }
 
-    /** @throws NotFoundException  */
+    /** @throws NotFoundException */
     public function persist(?Category $project, CategoryDTO $dto): void
     {
         $project->setName($dto->getName());

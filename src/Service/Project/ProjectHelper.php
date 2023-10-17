@@ -23,7 +23,7 @@ final class ProjectHelper
         return ProjectController::ROUTE_EDIT === $request->get('_route');
     }
 
-    /** @throws NotFoundException  */
+    /** @throws NotFoundException */
     public function editSlugParamExists(Request $request): ?Project
     {
         return isset($request->get('_route_params')['slug'])
@@ -38,7 +38,7 @@ final class ProjectHelper
             : ApiMessages::PROJECT_CREATE_SUCCESS_MESSAGE;
     }
 
-    /** @throws NotFoundException|BadDataException  */
+    /** @throws NotFoundException|BadDataException */
     public function validateRequestResource(Request $request, Project $project): void
     {
         (self::isEditRoute($request) && (null === $this->editSlugParamExists($request)))

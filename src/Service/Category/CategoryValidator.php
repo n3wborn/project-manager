@@ -19,7 +19,7 @@ final class CategoryValidator
     ) {
     }
 
-    /** @throws BadDataException*/
+    /** @throws BadDataException */
     public function validate(CategoryDTO $dto, bool $isEditRoute = true): void
     {
         $this->validateNameNotEmpty($dto->getName());
