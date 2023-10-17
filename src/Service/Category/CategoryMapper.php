@@ -24,6 +24,7 @@ final class CategoryMapper
         return new CategoryDTO(
             $category->getName(),
             $category->getSlug(),
+            CategoryHelper::getProjectsArrayFromCategory($category)
         );
     }
 }

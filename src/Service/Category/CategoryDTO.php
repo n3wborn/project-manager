@@ -7,6 +7,7 @@ final class CategoryDTO
     public function __construct(
         private string $name = '',
         private ?string $slug = null,
+        private array $projects = [],
     ) {
     }
 
@@ -30,6 +31,18 @@ final class CategoryDTO
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getProjects(): array
+    {
+        return $this->projects;
+    }
+
+    public function setProjects(array $projects): self
+    {
+        $this->projects = $projects;
 
         return $this;
     }
