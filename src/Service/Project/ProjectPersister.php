@@ -2,6 +2,7 @@
 
 namespace App\Service\Project;
 
+use App\Entity\Category;
 use App\Entity\Project;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
@@ -44,12 +45,24 @@ final class ProjectPersister
         return $response;
     }
 
-    /** @throws NotFoundException  */
-    public function persist(?Project $project, ProjectDTO $dto): void
+    public function persist(Project $project, ProjectDTO $dto): void
     {
         $project
             ->setName($dto->getName())
             ->setDescription($dto->getDescription());
+
+        /** @var Category $category */
+        foreach ($project->getCategories() as $category) {
+            $project->removeCategory($category);
+            $category->removeProject($project);
+        }
+
+        foreach ($dto->getCategories() as $dtoCategory) {
+            /** @var Category $category */
+            $category = $this->em->getRepository(Category::class)->findOneBySlug($dtoCategory['slug']);
+            $project->addCategory($category);
+            $category->addProject($project);
+        }
 
         $this->em->persist($project);
         $this->em->flush();
