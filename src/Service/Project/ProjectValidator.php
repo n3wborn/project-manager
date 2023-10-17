@@ -15,7 +15,7 @@ final class ProjectValidator
     public const NAME_SHOULD_BE_UNIQUE = 'Le projet doit avoir un nom unique';
     public const NAME_SHOULD_NOT_BE_EMPTY = 'Le champ Nom ne peut être vide';
     public const PROJECT_ALREADY_ARCHIVED = 'Le projet est inexistant ou a déja été supprimé';
-    public const CATEGORY_SLUG_INVALID = 'Au moins une des catégorie est invalide';
+    public const CATEGORY_SLUG_INVALID = 'Au moins une des catégories est invalide';
 
     public function __construct(
         private ProjectRepository $projectRepository,
