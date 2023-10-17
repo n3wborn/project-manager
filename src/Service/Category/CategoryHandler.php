@@ -29,7 +29,7 @@ final class CategoryHandler
                 && throw new NotFoundException(ApiMessages::translate(ApiMessages::CATEGORY_NOT_FOUND));
 
             $categoryInfos = $this->finder->get($category);
-            $result = CategoryHelper::getCategoryAndProjectsInfos($categoryInfos);
+            $result = CategoryMapper::fromEntityToJson($categoryInfos);
             $response = new ApiResponse($result);
         } catch (NotFoundException $exception) {
             $this->logger->logNotice($exception);
