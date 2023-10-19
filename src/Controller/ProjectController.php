@@ -48,7 +48,7 @@ final class ProjectController extends AbstractController
     }
 
     #[Route('/project/{slug}', name: self::ROUTE_ARCHIVE, methods: Request::METHOD_DELETE)]
-    public function classeArchive(?Project $project): JsonResponse
+    public function archiveProject(?Project $project): JsonResponse
     {
         return $this->handler->handleArchiveProject($project);
     }
