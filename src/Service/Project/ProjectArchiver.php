@@ -18,11 +18,13 @@ final class ProjectArchiver
         private ProjectValidator $validator,
         private ProjectMapper $mapper,
         private ExceptionLogger $logger,
+        private ProjectPersister $persister,
     ) {
     }
 
     public function softDelete(Project $project): void
     {
+        $this->persister->removeProjectFromCategories($project);
         $this->entityManager->persist($project->setArchivedAt(new \DateTimeImmutable()));
         $this->entityManager->flush();
     }

@@ -67,4 +67,19 @@ final class ProjectPersister
         $this->em->persist($project);
         $this->em->flush();
     }
+
+    public function removeProjectFromCategories(Project $project): void
+    {
+        array_map(
+            function (Category $category) use ($project) {
+                $category->removeProject($project);
+                $project->removeCategory($category);
+                $this->em->persist($category);
+                $this->em->persist($project);
+            },
+            $project->getCategories()->toArray()
+        );
+
+        $this->em->flush();
+    }
 }
