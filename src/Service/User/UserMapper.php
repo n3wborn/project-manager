@@ -23,7 +23,7 @@ final class UserMapper
         return new UserDTO(
             $user->getEmail(),
             $user->getSlug(),
-            // UserHelper::getCategoriesArrayFromUser($user)
+            UserHelper::getProjectsArrayFromUser($user)
         );
     }
 }
