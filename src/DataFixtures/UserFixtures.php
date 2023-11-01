@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Project;
 use App\Entity\User;
 use App\Repository\ProjectRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -27,9 +28,12 @@ final class UserFixtures extends Fixture implements OrderedFixtureInterface
             $user = $this->createUser($i);
 
             for ($j = 1; $j <= $count; ++$j) {
+                /** @var Project $randProject */
                 $randProject = $this->projectRepository->findOneByName('project-'.rand(1, ProjectFixtures::QUANTITY));
                 $user->addProject($randProject);
+                $randProject->setUserProject($user);
                 $manager->persist($user);
+                $manager->persist($randProject);
             }
         }
 
