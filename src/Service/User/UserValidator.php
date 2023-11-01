@@ -83,7 +83,7 @@ final class UserValidator
     /** @throws BadDataException */
     private function validateProjectExists(string $slug): self
     {
-        (null === $this->ProjectRepository->findOneBy(['slug' => $slug]))
+        (null === $this->projectRepository->findOneBy(['slug' => $slug]))
             && throw new NotFoundException(self::PROJECT_SLUG_INVALID);
 
         return $this;
