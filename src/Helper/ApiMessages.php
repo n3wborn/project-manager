@@ -2,7 +2,7 @@
 
 namespace App\Helper;
 
-final class ApiMessages
+enum ApiMessages
 {
     public const ACCESS_DENIED_EXCEPTION_MESSAGE = "Vous n'êtes pas autorisé à accéder à cette page";
     public const CATEGORY_CREATE_ERROR_MESSAGE = 'An error occurred while persisting category';
@@ -39,6 +39,11 @@ final class ApiMessages
     public const PROJECT_UNKNOWN = 'Project not found';
     public const PROJECT_UPDATE_ERROR_MESSAGE = 'An error occurred during project update';
     public const PROJECT_UPDATE_SUCCESS_MESSAGE = 'Le projet a bien été mis à jour';
+    public const USER_ARCHIVE_SUCCESS_MESSAGE = "L'utilisateur a bien été archivé";
+    public const USER_CREATE_SUCCESS_MESSAGE = "L'utilisateur a bien été créé";
+    public const USER_NOT_FOUND = "Vous n'êtes pas connecté";
+    public const USER_UNKNOWN = "Cet utilisateur n'existe pas";
+    public const USER_UPDATE_SUCCESS_MESSAGE = "L'utilisateur a bien été mis à jour";
 
     public static function translate(string $key): string
     {
