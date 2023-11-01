@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
@@ -40,6 +41,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'userProject', targetEntity: Project::class, fetch: 'EAGER')]
+    private Collection $projects;
+
+    public function __construct()
+    {
+        $this->projects = new ArrayCollection();
+    }
 
     final public function getId(): ?Uuid
     {
@@ -100,27 +109,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // $this->plainPassword = null;
     }
 
-    public function getProjects(): Collection
+    final public function getProjects(): Collection
     {
         return $this->projects;
     }
 
-    public function addProject(Project $project): self
+    final public function addProject(Project $project): self
     {
-        if (!$this->projects->contains($project)) {
-            $this->projects->add($project);
-            $project->setUser($this);
-        }
+        !$this->projects->contains($project)
+            && $this->projects->add($project)
+            && $project->setUserProject($this);
 
         return $this;
     }
 
-    public function removeProject(Project $project): self
+    final public function removeProject(Project $project): self
     {
         if ($this->projects->removeElement($project)) {
             // set the owning side to null (unless already changed)
-            if ($project->getUser() === $this) {
-                $project->setUser(null);
+            if ($project->getUserProject() === $this) {
+                $project->setUserProject(null);
             }
         }
 
