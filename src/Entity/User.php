@@ -19,6 +19,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use ArchivableEntity;
     use SluggableTrait;
     use CreatableUpdateableTrait;
+    use UsernameableTrait;
 
     public const ROLE_ADMIN = 'ROLE_ADMIN';
     public const ROLE_USER = 'ROLE_USER';
@@ -70,7 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @see UserInterface */
     final public function getUserIdentifier(): string
     {
-        return $this->email;
+        return $this->getUsername();
     }
 
     /** @see UserInterface */

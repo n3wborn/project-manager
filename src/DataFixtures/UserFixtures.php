@@ -46,6 +46,7 @@ final class UserFixtures extends Fixture implements OrderedFixtureInterface
     {
         return ($user = new User())
             ->setEmail("mail$number@mail.com")
+            ->setUsername("user-$number")
             ->setPassword($this->userPasswordHasher->hashPassword($user, 'dev'));
     }
 
@@ -53,6 +54,7 @@ final class UserFixtures extends Fixture implements OrderedFixtureInterface
     {
         return ($user = new User())
             ->setEmail('admin@mail.com')
+            ->setUsername('admin')
             ->setRoles([User::ROLE_ADMIN])
             ->setPassword($this->userPasswordHasher->hashPassword($user, 'dev'));
     }
