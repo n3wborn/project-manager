@@ -24,7 +24,7 @@ final class UserHelper
     }
 
     /** @throws NotFoundException */
-    public function editSlugParamExists(Request $request): ?Project
+    public function editSlugParamExists(Request $request): ?User
     {
         return isset($request->get('_route_params')['slug'])
             ? $this->em->getRepository(User::class)->findOneBy(['slug' => $request->get('_route_params')['slug']])
