@@ -2,6 +2,7 @@
 
 namespace App\Service\Project;
 
+use App\Entity\Category;
 use App\Entity\Project;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
@@ -11,7 +12,6 @@ use App\Helper\ExceptionLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
 
 final class ProjectPersister
 {
@@ -20,7 +20,6 @@ final class ProjectPersister
         private EntityManagerInterface $em,
         private ProjectHelper $helper,
         private ExceptionLogger $logger,
-        private SerializerInterface $serializer,
     ) {
     }
 
@@ -46,14 +45,41 @@ final class ProjectPersister
         return $response;
     }
 
-    /** @throws NotFoundException  */
-    public function persist(?Project $project, ProjectDTO $dto): void
+    public function persist(Project $project, ProjectDTO $dto): void
     {
         $project
             ->setName($dto->getName())
             ->setDescription($dto->getDescription());
 
+        /** @var Category $category */
+        foreach ($project->getCategories() as $category) {
+            $project->removeCategory($category);
+            $category->removeProject($project);
+        }
+
+        foreach ($dto->getCategories() as $dtoCategory) {
+            /** @var Category $category */
+            $category = $this->em->getRepository(Category::class)->findOneBySlug($dtoCategory['slug']);
+            $project->addCategory($category);
+            $category->addProject($project);
+        }
+
         $this->em->persist($project);
+        $this->em->flush();
+    }
+
+    public function removeProjectFromCategories(Project $project): void
+    {
+        array_map(
+            function (Category $category) use ($project) {
+                $category->removeProject($project);
+                $project->removeCategory($category);
+                $this->em->persist($category);
+                $this->em->persist($project);
+            },
+            $project->getCategories()->toArray()
+        );
+
         $this->em->flush();
     }
 }

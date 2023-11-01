@@ -14,17 +14,19 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 final class CategoryArchiver
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
+        private EntityManagerInterface $em,
         private CategoryValidator $validator,
         private CategoryMapper $mapper,
         private ExceptionLogger $logger,
+        private CategoryPersister $persister,
     ) {
     }
 
     public function softDelete(Category $category): void
     {
-        $this->entityManager->persist($category->setArchivedAt(new \DateTimeImmutable()));
-        $this->entityManager->flush();
+        $this->persister->removeCategoryFromProjects($category);
+        $this->em->persist($category->setArchivedAt(new \DateTimeImmutable()));
+        $this->em->flush();
     }
 
     public function process(?Category $category): JsonResponse

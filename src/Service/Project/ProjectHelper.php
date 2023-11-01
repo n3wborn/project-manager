@@ -3,6 +3,7 @@
 namespace App\Service\Project;
 
 use App\Controller\ProjectController;
+use App\Entity\Category;
 use App\Entity\Project;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
@@ -22,7 +23,7 @@ final class ProjectHelper
         return ProjectController::ROUTE_EDIT === $request->get('_route');
     }
 
-    /** @throws NotFoundException  */
+    /** @throws NotFoundException */
     public function editSlugParamExists(Request $request): ?Project
     {
         return isset($request->get('_route_params')['slug'])
@@ -37,7 +38,7 @@ final class ProjectHelper
             : ApiMessages::PROJECT_CREATE_SUCCESS_MESSAGE;
     }
 
-    /** @throws NotFoundException|BadDataException  */
+    /** @throws NotFoundException|BadDataException */
     public function validateRequestResource(Request $request, Project $project): void
     {
         (self::isEditRoute($request) && (null === $this->editSlugParamExists($request)))
@@ -49,6 +50,17 @@ final class ProjectHelper
 
     public static function projectExists(?Project $project): bool
     {
-        return (!$project->isArchived()) && (null !== $project);
+        return (!$project?->isArchived()) && (null !== $project);
+    }
+
+    public static function getCategoriesArrayFromProject(Project $project): array
+    {
+        return array_map(
+            static fn (Category $category) => [
+                'name' => $category->getName(),
+                'slug' => $category->getSlug(),
+            ],
+            $project->getCategories()->toArray()
+        );
     }
 }

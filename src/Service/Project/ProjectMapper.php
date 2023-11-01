@@ -24,6 +24,7 @@ final class ProjectMapper
             $project->getName(),
             $project->getDescription(),
             $project->getSlug(),
+            ProjectHelper::getCategoriesArrayFromProject($project)
         );
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Service\Category;
 
 use App\Entity\Category;
+use App\Entity\Project;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
@@ -44,12 +45,40 @@ final class CategoryPersister
         return $response;
     }
 
-    /** @throws NotFoundException  */
-    public function persist(?Category $project, CategoryDTO $dto): void
+    /** @throws NotFoundException */
+    public function persist(Category $category, CategoryDTO $dto): void
     {
-        $project->setName($dto->getName());
+        $category->setName($dto->getName());
 
-        $this->em->persist($project);
+        /** @var Project $project */
+        foreach ($category->getProjects() as $project) {
+            $category->removeProject($project);
+            $project->removeCategory($category);
+        }
+
+        foreach ($dto->getProjects() as $dtoProject) {
+            /** @var Project $project */
+            $project = $this->em->getRepository(Project::class)->findOneBySlug($dtoProject['slug']);
+            $category->addProject($project);
+            $project->addCategory($category);
+        }
+
+        $this->em->persist($category);
+        $this->em->flush();
+    }
+
+    public function removeCategoryFromProjects(Category $category): void
+    {
+        array_map(
+            function (Project $project) use ($category) {
+                $project->removeCategory($category);
+                $category->removeProject($project);
+                $this->em->persist($project);
+                $this->em->persist($category);
+            },
+            $category->getProjects()->toArray()
+        );
+
         $this->em->flush();
     }
 }

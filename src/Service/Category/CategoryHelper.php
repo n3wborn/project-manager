@@ -23,7 +23,7 @@ final class CategoryHelper
         return CategoryController::ROUTE_EDIT === $request->get('_route');
     }
 
-    /** @throws NotFoundException  */
+    /** @throws NotFoundException */
     public function editSlugParamExists(Request $request): ?Category
     {
         return isset($request->get('_route_params')['slug'])
@@ -38,7 +38,7 @@ final class CategoryHelper
             : ApiMessages::CATEGORY_CREATE_SUCCESS_MESSAGE;
     }
 
-    /** @throws NotFoundException|BadDataException  */
+    /** @throws NotFoundException|BadDataException */
     public function validateRequestResource(Request $request, category $category): void
     {
         (self::isEditRoute($request) && (null === $this->editSlugParamExists($request)))
@@ -58,6 +58,17 @@ final class CategoryHelper
 
     public static function categoryExists(?Category $category): bool
     {
-        return (!$category->isArchived()) && (null !== $category);
+        return (!$category?->isArchived()) && (null !== $category);
+    }
+
+    public static function getProjectsArrayFromCategory(Category $category): array
+    {
+        return array_map(
+            static fn (Project $project) => [
+                'name' => $project->getName(),
+                'slug' => $project->getSlug(),
+            ],
+            $category->getProjects()->toArray()
+        );
     }
 }

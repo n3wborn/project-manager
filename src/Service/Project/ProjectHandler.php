@@ -28,8 +28,9 @@ final class ProjectHandler
             null === $project
                 && throw new NotFoundException(ApiMessages::translate(ApiMessages::PROJECT_NOT_FOUND));
 
-            $result = $this->finder->get($project);
-            $response = new ApiResponse(ProjectMapper::fromEntityToJson($result));
+            $projectInfos = $this->finder->get($project);
+            $result = ProjectMapper::fromEntityToJson($projectInfos);
+            $response = new ApiResponse($result);
         } catch (NotFoundException $exception) {
             $this->logger->logNotice($exception);
             $response = ApiResponse::createWarningMessage($exception->getMessage());
