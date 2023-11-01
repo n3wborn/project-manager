@@ -21,13 +21,19 @@ final class UserFixtures extends Fixture implements OrderedFixtureInterface
 
     public function load(ObjectManager $manager): void
     {
-        $admin = $this->createAdmin();
-        $manager->persist($admin);
+        $count = rand(1, 5);
 
         for ($i = 1; $i <= self::QUANTITY; ++$i) {
             $user = $this->createUser($i);
-            $manager->persist($user);
+
+            for ($j = 1; $j <= $count; ++$j) {
+                $randProject = $this->projectRepository->findOneByName('project-'.rand(1, ProjectFixtures::QUANTITY));
+                $user->addProject($randProject);
+                $manager->persist($user);
+            }
         }
+
+        $manager->persist($this->createAdmin());
 
         $manager->flush();
     }
