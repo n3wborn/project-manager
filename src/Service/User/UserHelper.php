@@ -2,6 +2,7 @@
 
 namespace App\Service\User;
 
+use App\Controller\UserController;
 use App\Entity\Project;
 use App\Entity\User;
 use App\Exception\BadDataException;
