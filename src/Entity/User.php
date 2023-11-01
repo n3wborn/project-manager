@@ -20,12 +20,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     use SluggableTrait;
     use CreatableUpdateableTrait;
     use UsernameableTrait;
+    use RoleableTrait;
 
-    public const ROLE_ADMIN = 'ROLE_ADMIN';
-    public const ROLE_USER = 'ROLE_USER';
     public const ROLES = [
         self::ROLE_ADMIN => 'Administrateur',
         self::ROLE_USER => 'Utilisateur',
+        self::ROLE_GUEST => 'Invité',
     ];
 
     #[ORM\Id]
@@ -72,22 +72,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     final public function getUserIdentifier(): string
     {
         return $this->getUsername();
-    }
-
-    /** @see UserInterface */
-    final public function getRoles(): array
-    {
-        $roles = $this->roles;
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
-    }
-
-    final public function setRoles(array $roles): self
-    {
-        $this->roles = $roles;
-
-        return $this;
     }
 
     /** @see PasswordAuthenticatedUserInterface  */
