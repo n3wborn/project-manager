@@ -16,22 +16,22 @@ WORKDIR /app
 # persistent / runtime deps
 # hadolint ignore=DL3018
 RUN apk add --no-cache \
-		acl \
-		fcgi \
-		file \
-		gettext \
-		git \
-		postgresql-dev \
+	acl \
+	file \
+	gettext \
+	git \
+	postgresql-dev \
 	;
 
 RUN set -eux; \
-    install-php-extensions \
-		apcu \
-		intl \
-		opcache \
-		zip \
-		pdo_pgsql \
-    ;
+	install-php-extensions \
+	apcu \
+	intl \
+	opcache \
+	opcache \
+	zip \
+	pdo_pgsql \
+	;
 
 COPY --link docker/frankenphp/conf.d/app.ini $PHP_INI_DIR/conf.d/
 COPY --link --chmod=755 docker/frankenphp/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
@@ -45,7 +45,7 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 COPY --from=composer_upstream --link /composer /usr/bin/composer
 
-HEALTHCHECK CMD wget --no-verbose --tries=1 --spider http://localhost:2019/metrics || exit 1
+HEALTHCHECK --start-period=60s CMD curl -f http://localhost:2019/metrics || exit 1
 CMD [ "frankenphp", "run", "--config", "/etc/caddy/Caddyfile" ]
 
 # Dev FrankenPHP image
@@ -58,8 +58,8 @@ RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
 
 RUN set -eux; \
 	install-php-extensions \
-    	xdebug \
-    ;
+	xdebug \
+	;
 
 COPY --link docker/frankenphp/conf.d/app.dev.ini $PHP_INI_DIR/conf.d/
 
