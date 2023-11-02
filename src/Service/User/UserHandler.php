@@ -29,7 +29,7 @@ final class UserHandler
                 && throw new NotFoundException(ApiMessages::translate(ApiMessages::USER_NOT_FOUND));
 
             $userInfos = $this->finder->get($user);
-            $result = UserMapper::fromEntityToJson($userInfos);
+            $result = UserFetchMapper::fromEntityToJson($userInfos);
             $response = new ApiResponse($result);
         } catch (NotFoundException $exception) {
             $this->logger->logNotice($exception);
