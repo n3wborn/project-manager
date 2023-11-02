@@ -38,6 +38,9 @@ class Project
     #[ORM\ManyToMany(targetEntity: Category::class, mappedBy: 'projects', fetch: 'EAGER')]
     private Collection $categories;
 
+    #[ORM\ManyToOne(inversedBy: 'projects')]
+    private ?User $userProject = null;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
@@ -108,12 +111,12 @@ class Project
         $this->updatedAt = new \DateTimeImmutable();
     }
 
-    public function getCategories(): Collection
+    final public function getCategories(): Collection
     {
         return $this->categories;
     }
 
-    public function addCategory(Category $category): self
+    final public function addCategory(Category $category): self
     {
         !$this->categories->contains($category)
             && $this->categories->add($category)
@@ -122,10 +125,22 @@ class Project
         return $this;
     }
 
-    public function removeCategory(Category $category): self
+    final public function removeCategory(Category $category): self
     {
         $this->categories->removeElement($category)
         && $category->removeProject($this);
+
+        return $this;
+    }
+
+    final public function getUserProject(): ?User
+    {
+        return $this->userProject;
+    }
+
+    final public function setUserProject(?User $userProject): self
+    {
+        $this->userProject = $userProject;
 
         return $this;
     }
