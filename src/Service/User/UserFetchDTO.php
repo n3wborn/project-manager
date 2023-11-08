@@ -5,9 +5,9 @@ namespace App\Service\User;
 final class UserFetchDTO
 {
     public function __construct(
+        private string $slug = '',
         private string $email = '',
         private string $username = '',
-        private string $slug = '',
         private array $projects = [],
     ) {
     }

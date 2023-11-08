@@ -21,9 +21,9 @@ final class UserFetchMapper
     public static function fromEntityToDTO(User $user): UserFetchDTO
     {
         return new UserFetchDTO(
+            $user->getSlug(),
             $user->getEmail(),
             $user->getUsername(),
-            $user->getSlug(),
             UserHelper::getProjectsArrayFromUser($user)
         );
     }
