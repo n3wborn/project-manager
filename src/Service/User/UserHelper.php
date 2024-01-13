@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,6 +16,7 @@ final class UserHelper
 {
     public function __construct(
         private EntityManagerInterface $em,
+        private UserRepository $userRepository,
     ) {
     }
 
@@ -26,9 +28,7 @@ final class UserHelper
     /** @throws NotFoundException */
     public function editSlugParamExists(Request $request): ?User
     {
-        return isset($request->get('_route_params')['slug'])
-            ? $this->em->getRepository(User::class)->findOneBy(['slug' => $request->get('_route_params')['slug']])
-            : null;
+        return $this->userRepository->findOneBySlug($request->get('slug', ''));
     }
 
     public static function generateEditSuccessMessage(Request $request): string

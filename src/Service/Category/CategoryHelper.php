@@ -8,6 +8,7 @@ use App\Entity\Project;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,6 +16,7 @@ final class CategoryHelper
 {
     public function __construct(
         private EntityManagerInterface $em,
+        private CategoryRepository $categoryRepository,
     ) {
     }
 
@@ -26,9 +28,7 @@ final class CategoryHelper
     /** @throws NotFoundException */
     public function editSlugParamExists(Request $request): ?Category
     {
-        return isset($request->get('_route_params')['slug'])
-            ? $this->em->getRepository(Category::class)->findOneBy(['slug' => $request->get('_route_params')['slug']])
-            : null;
+        return $this->categoryRepository->findOneBySlug($request->get('slug', ''));
     }
 
     public static function generateEditSuccessMessage(Request $request): string
@@ -50,10 +50,7 @@ final class CategoryHelper
 
     public static function findNotArchivedFromProject(Project $project): array
     {
-        return array_map(
-            static fn (Category $category) => !$category->isArchived() ? $category : null,
-            $project->getCategories()->toArray()
-        );
+        return array_filter($project->getCategories()->toArray(), fn (Category $category) => $category->isArchived());
     }
 
     public static function categoryExists(?Category $category): bool

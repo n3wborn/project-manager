@@ -8,6 +8,7 @@ use App\Entity\Project;
 use App\Exception\BadDataException;
 use App\Exception\NotFoundException;
 use App\Helper\ApiMessages;
+use App\Repository\ProjectRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,6 +16,7 @@ final class ProjectHelper
 {
     public function __construct(
         private EntityManagerInterface $em,
+        private ProjectRepository $projectRepository
     ) {
     }
 
@@ -26,9 +28,7 @@ final class ProjectHelper
     /** @throws NotFoundException */
     public function editSlugParamExists(Request $request): ?Project
     {
-        return isset($request->get('_route_params')['slug'])
-            ? $this->em->getRepository(Project::class)->findOneBy(['slug' => $request->get('_route_params')['slug']])
-            : null;
+        return $this->projectRepository->findOneBySlug($request->get('slug', ''));
     }
 
     public static function generateEditSuccessMessage(Request $request): string
