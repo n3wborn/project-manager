@@ -57,7 +57,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->orderBy('u.email', 'ASC')
             ->getQuery()
             ->getResult();
-        ;
     }
 
     public function findNotArchivedByEmail(string $email): ?User

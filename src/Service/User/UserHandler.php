@@ -44,8 +44,10 @@ final class UserHandler
 
     public function handleGetAllUsers(): JsonResponse
     {
-        $users = $this->finder->getAllNotArchived();
-        $result = array_map(static fn (User $user) => UserMapper::fromEntityToJson($user), $users);
+        $result = array_map(
+            static fn (User $user) => UserMapper::fromEntityToJson($user),
+            $this->finder->getAllNotArchived()
+        );
 
         return new ApiResponse($result);
     }
@@ -63,8 +65,11 @@ final class UserHandler
     public function handleGetUserProjects(?User $user): JsonResponse
     {
         try {
-            $projects = $this->finder->getUserProjects($user);
-            $result = array_map(static fn (Project $project) => ProjectMapper::fromEntityToJson($project), $projects);
+            $result = array_map(
+                static fn (Project $project) => ProjectMapper::fromEntityToJson($project),
+                $this->finder->getUserProjects($user)
+            );
+
             $response = new ApiResponse($result);
         } catch (NotFoundException $exception) {
             $this->logger->logNotice($exception);
