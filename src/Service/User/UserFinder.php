@@ -33,9 +33,9 @@ final class UserFinder
         return $this->userRepository->findAll();
     }
 
-    public function getAllNotArchived()
+    public function getAllNotArchived(): array
     {
-        $this->userRepository->findAllNotArchived();
+        return $this->userRepository->findAllNotArchived();
     }
 
     /** @throws NotFoundException */
