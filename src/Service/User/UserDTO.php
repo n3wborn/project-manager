@@ -5,8 +5,10 @@ namespace App\Service\User;
 final class UserDTO
 {
     public function __construct(
-        private string $email = '',
         private ?string $slug = null,
+        private ?string $password = null,
+        private string $email,
+        private string $username,
         private array $projects = [],
     ) {
     }
@@ -31,6 +33,30 @@ final class UserDTO
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getUsername(): string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(?string $password): self
+    {
+        $this->password = $password;
 
         return $this;
     }

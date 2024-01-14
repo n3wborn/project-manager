@@ -12,6 +12,7 @@ use App\Helper\ExceptionLogger;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class UserPersister
 {
@@ -20,6 +21,7 @@ final class UserPersister
         private EntityManagerInterface $em,
         private UserHelper $helper,
         private ExceptionLogger $logger,
+        private UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
@@ -47,7 +49,12 @@ final class UserPersister
 
     public function persist(User $user, UserDTO $dto): void
     {
-        $user->setEmail($dto->getEmail());
+        $user
+            ->setEmail($dto->getEmail())
+            ->setUsername($dto->getUsername());
+
+        $dto->getPassword()
+            && $user->setPassword($this->passwordHasher->hashPassword($user, $dto->getPassword()));
 
         foreach ($user->getProjects() as $project) {
             $user->removeProject($project);

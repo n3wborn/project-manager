@@ -21,8 +21,10 @@ final class UserMapper
     public static function fromEntityToDTO(User $user): UserDTO
     {
         return new UserDTO(
-            $user->getEmail(),
             $user->getSlug(),
+            $user->getPassword(),
+            $user->getEmail(),
+            $user->getUsername(),
             UserHelper::getProjectsArrayFromUser($user)
         );
     }
