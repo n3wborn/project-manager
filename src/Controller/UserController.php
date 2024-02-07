@@ -35,7 +35,7 @@ final class UserController extends AbstractController
     #[Route('/user/{slug}', name: self::ROUTE_EDIT, methods: Request::METHOD_POST)]
     public function persistUser(
         ?User $user,
-        #[MapRequestPayload()] ?UserDTO $dto,
+        #[MapRequestPayload()] UserDTO $dto,
         Request $request,
     ): JsonResponse {
         return $this->handler->handlePersistUser($user, $request, $dto);
