@@ -30,25 +30,25 @@ class UserChecker implements UserCheckerInterface
         }
     }
 
-    final public function checkPreAuth(UserInterface $user): bool
+    final public function checkPreAuth(UserInterface $user): void
     {
-        if (!$user instanceof User) {
-            return false;
-        }
+        /* @todo: fixme ! (since v7.0)
+            if (!$user instanceof User) {
 
-        !$user->hasPasswordChanged()
-        && throw new CustomUserMessageAccountStatusException("<strong>Votre mot de passe doit être mis à jour avant de poursuivre.</strong>\n
+            !$user->hasPasswordChanged()
+            throw new CustomUserMessageAccountStatusException("<strong>Votre mot de passe doit être mis à jour avant de poursuivre.</strong>\n
                         Si vous n'avez pas reçu de lien d'activation
                         - veuillez vérifier vos emails dans le dossier \"spam\" ou \"indésirables\"
                         - sinon cliquez sur le lien <strong>\"mot de passe oublié\"</strong> pour en recevoir un nouveau");
 
-        !$user->hasEmailVerified()
-        && throw new CustomUserMessageAccountStatusException("Votre adresse e-mail n'a pas été validée.");
+            !$user->hasEmailVerified()
+                && throw new CustomUserMessageAccountStatusException("Votre adresse e-mail n'a pas été validée.");
 
-        !$user->isActivated()
-        && throw new CustomUserMessageAccountStatusException('Votre compte est désactivé.');
+            !$user->isActivated()
+                && throw new CustomUserMessageAccountStatusException('Votre compte est désactivé.');
 
-        return true;
+            return true;
+        */
     }
 
     final public function checkPostAuth(UserInterface $user): void
