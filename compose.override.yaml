@@ -11,10 +11,7 @@ services:
       - ./docker/frankenphp/Caddyfile:/etc/caddy/Caddyfile:ro
       - ./docker/frankenphp/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
     environment:
-      MERCURE_EXTRA_DIRECTIVES: demo
-      # See https://xdebug.org/docs/all_settings#mode
-      XDEBUG_MODE: "${XDEBUG_MODE:-off}"
-      TRUSTED_HOSTS: ^${SERVER_NAME:-project-manager\.localhost|localhost}|php$$
+      SERVER_NAME: ${SERVER_NAME:-project-manager\.localhost}, php:80
       DATABASE_URL: postgresql://user:password@database:5432/db_name?serverVersion=15&charset=${POSTGRES_CHARSET:-utf8}
       POSTGRES_DB: db_name
     extra_hosts:
